@@ -3,11 +3,16 @@ const generateToken = require('../utils/generateToken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// ✅ Signup controller
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
+    console.log(" Signup request body:", { name, email });
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -29,12 +34,12 @@ const signup = async (req, res) => {
     const token = generateToken(user.id);
     res.status(201).json({ token });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error(" Signup error:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 };
 
-// ✅ Login controller
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -56,5 +61,4 @@ const login = async (req, res) => {
   }
 };
 
-// ✅ Export both functions
 module.exports = { signup, login };

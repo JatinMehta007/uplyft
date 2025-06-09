@@ -1,7 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
-dotenv.config();
 
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
@@ -11,13 +9,21 @@ const app = express();
 
 app.use(express.json());
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://uplyft-jatin.vercel.app'
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
-  origin:'https://uplyft-jatin.vercel.app/',
-  credentials: true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
-
-
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
@@ -29,5 +35,5 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(` Server running on port ${PORT}`);
 });

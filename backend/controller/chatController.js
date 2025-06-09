@@ -14,7 +14,7 @@ try {
 
 const chatQuery = (req, res) => {
 
-  console.log("📥 Received body:", req.body);
+  console.log(" Received body:", req.body);
   
   const { message } = req.body;
 
@@ -31,8 +31,8 @@ const chatQuery = (req, res) => {
     (product.tags && product.tags.some(tag => tag.toLowerCase().includes(keyword)))
   );
 
-  console.log("🔍 Searched keyword:", keyword);
-  console.log("✅ Products matched:", results.length);
+  console.log(" Searched keyword:", keyword);
+  console.log("Products matched:", results.length);
 
   res.json({ results });
 };
