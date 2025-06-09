@@ -1,12 +1,28 @@
-const Product = require('../models/Product');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 exports.getAllProducts = async (req, res) => {
-  const products = await Product.find({});
-  res.json(products);
+  try {
+    const products = await prisma.product.findMany();
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching products" });
+  }
 };
 
 exports.loadMockProducts = async (req, res) => {
-  const mockProducts = require('../mock/products.json');
-  await Product.insertMany(mockProducts);
-  res.json({ message: "Mock products loaded" });
+  try {
+    const mockProducts = require('../mock/products.json');
+
+    await prisma.product.createMany({
+      data: mockProducts,
+      skipDuplicates: true,
+    });
+
+    res.json({ message: "Mock products loaded" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error loading mock products" });
+  }
 };

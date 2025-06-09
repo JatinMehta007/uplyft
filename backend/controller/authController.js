@@ -1,26 +1,60 @@
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/generateToken');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-exports.signup = async (req, res) => {
+// ✅ Signup controller
+const signup = async (req, res) => {
   const { name, email, password } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
+
   try {
-    const user = await User.create({ name, email, password: hashed });
-    const token = generateToken(user._id);
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    const token = generateToken(user.id);
     res.status(201).json({ token });
   } catch (err) {
-    res.status(400).json({ message: "User already exists" });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-exports.login = async (req, res) => {
+// ✅ Login controller
+const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (user && await bcrypt.compare(password, user.password)) {
-    const token = generateToken(user._id);
-    res.json({ token });
-  } else {
-    res.status(401).json({ message: "Invalid credentials" });
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      const token = generateToken(user.id);
+      res.json({ token });
+    } else {
+      res.status(401).json({ message: "Invalid credentials" });
+    }
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
+// ✅ Export both functions
+module.exports = { signup, login };
