@@ -5,6 +5,7 @@ import {
 } from "react-router-dom"
 import { Signup } from "./components/signup"
 import { Login } from "./components/login"
+import Chat from "./components/chat"
 
 function App() {
  
@@ -12,9 +13,9 @@ function App() {
     <>
     <BrowserRouter>
     <Routes>
-       {/* <Route path="/" element={<Home/>}></Route> */}
         <Route path="/" element={<Signup/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
+        <Route path="/chat" element={<Chat/>}></Route>
         
     </Routes>
     </BrowserRouter>
