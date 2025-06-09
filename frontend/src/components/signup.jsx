@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // fixed import here
+import { useNavigate } from "react-router-dom"; 
 import { Input } from "../ui/input.jsx";
 import { Spotlight } from "../ui/spotLight.js";
 import axios from "axios";

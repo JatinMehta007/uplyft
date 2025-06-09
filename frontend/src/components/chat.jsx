@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { cn } from '../lib/utils';
 import { Input } from '../ui/Inputs';
+import { BACKEND_URL } from '../../config';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5001/api',
+  baseURL: `${BACKEND_URL}/api`,
   withCredentials: true
 });
 

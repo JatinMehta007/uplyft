@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://uplyft-backend.vercel.app/";
+export const BACKEND_URL = "http://localhost:5001";
