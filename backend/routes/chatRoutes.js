@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { chatQuery } = require('../controllers/chatController');
+const { chatQuery } = require('../controller/chatController');
 
 router.post('/', chatQuery);
 
